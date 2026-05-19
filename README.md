@@ -7,7 +7,6 @@
 - [API Reference](#api-reference)
 - [Authentication Flow](#authentication-flow)
 - [Azure Setup](#azure-setup)
-- [Running Tests](#running-tests)
 - [Docker](#docker)
 - [Project Structure](#project-structure)
 
@@ -21,8 +20,7 @@
 | **Multi-subnet** | Create multiple subnets in a single API call |
 | **JWT Auth** | All resource endpoints require a Bearer token |
 | **Open Authorization** | Any registered/authenticated user can manage VNETs |
-| **Azure SDK** | Real provisioning via `azure-mgmt-network` |
-| **Mock Mode** | Runs without Azure credentials for local dev & CI |
+| **Azure SDK** | Real provisioning via `azure-mgmt-network` ||
 | **Async** | Fully async via `asyncio` + `aiosqlite`/`asyncpg` |
 | **OpenAPI Docs** | Auto-generated Swagger UI at `/docs` |
 
@@ -64,8 +62,8 @@
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-org>/azure-vnet-api.git
-cd azure-vnet-api
+git https://github.com/ashutosh-p1987/azurevnet.git
+cd azurevnet
 ```
 
 ### 2. Create a virtual environment
