@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     )
 
     # ------------------------------------------------------------------
-    # Database (SQLite for local dev; swap URL for PostgreSQL in prod)
+    # Database (SQLite)
     # ------------------------------------------------------------------
     DATABASE_URL: str = "sqlite+aiosqlite:///./vnet_api.db"
 
