@@ -1,9 +1,3 @@
-# Azure VNET API
-
-A production-ready **FastAPI** application for creating and managing Azure Virtual Networks (VNETs) with multiple subnets. Secured with **JWT Bearer authentication**, backed by the **Azure SDK**, and persists resource data in a local database.
-
----
-
 ## Table of Contents
 
 - [Features](#features)
@@ -38,7 +32,7 @@ A production-ready **FastAPI** application for creating and managing Azure Virtu
 
 ```
 ┌─────────────────────────────────────────────┐
-│                  FastAPI App                │
+│            FastAPIazvnet App                │
 │                                             │
 │  POST /api/v1/auth/register                 │
 │  POST /api/v1/auth/login  ──► JWT token     │
@@ -53,8 +47,8 @@ A production-ready **FastAPI** application for creating and managing Azure Virtu
 └──────────────┬──────────────────────────────┘
                │
        ┌───────▼────────┐        ┌──────────────────┐
-       │   SQLite /     │        │  Azure Network   │
-       │   PostgreSQL   │        │  Management API  │
+       │   SQLite       │        │  Azure Network   │
+       │                │        │  Management API  │
        └────────────────┘        └──────────────────┘
 ```
 
@@ -157,11 +151,11 @@ All settings are loaded from environment variables or a `.env` file.
 # 1. Register
 curl -X POST http://localhost:8000/api/v1/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"username":"alice","email":"alice@example.com","password":"securepass123"}'
+  -d '{"username":"users","email":"users@example.com","password":"securepass123"}'
 
 # 2. Login
 TOKEN=$(curl -s -X POST http://localhost:8000/api/v1/auth/login \
-  -d "username=alice&password=securepass123" | jq -r .access_token)
+  -d "username=users&password=securepass123" | jq -r .access_token)
 
 # 3. Create VNET
 curl -X POST http://localhost:8000/api/v1/vnets/ \
@@ -285,10 +279,3 @@ azure-vnet-api/
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
-```
-
----
-
-## License
-
-MIT
