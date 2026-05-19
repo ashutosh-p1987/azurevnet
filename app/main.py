@@ -1,6 +1,4 @@
-"""
-Azure VNET API - Main Application Entry Point
-"""
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -45,9 +43,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# ---------------------------------------------------------------------------
-# CORS
-# ---------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -56,17 +51,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------------------------
-# Routers
-# ---------------------------------------------------------------------------
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(vnets.router, prefix="/api/v1/vnets", tags=["Virtual Networks"])
 app.include_router(subnets.router, prefix="/api/v1/vnets", tags=["Subnets"])
 
 
-# ---------------------------------------------------------------------------
-# Global exception handler
-# ---------------------------------------------------------------------------
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
@@ -75,10 +64,6 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": "An internal server error occurred."},
     )
 
-
-# ---------------------------------------------------------------------------
-# Health check
-# ---------------------------------------------------------------------------
 @app.get("/health", tags=["Health"])
 async def health_check():
     return {"status": "healthy", "version": "1.0.0"}

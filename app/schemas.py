@@ -1,6 +1,4 @@
-"""
-Pydantic schemas for request validation and response serialisation.
-"""
+
 from __future__ import annotations
 from datetime import datetime
 from typing import List, Optional
@@ -8,12 +6,9 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 import ipaddress
 
 
-# ---------------------------------------------------------------------------
-# Auth
-# ---------------------------------------------------------------------------
 class UserCreate(BaseModel):
-    username: str = Field(..., min_length=3, max_length=64, example="johndoe")
-    email: EmailStr = Field(..., example="john@example.com")
+    username: str = Field(..., min_length=3, max_length=64, example="testuser")
+    email: EmailStr = Field(..., example="testuser@example.com")
     password: str = Field(..., min_length=8, example="securepassword123")
 
 
@@ -36,9 +31,6 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 
-# ---------------------------------------------------------------------------
-# Subnet
-# ---------------------------------------------------------------------------
 class SubnetCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=128, example="subnet-frontend")
     address_prefix: str = Field(..., example="10.0.1.0/24")
@@ -65,9 +57,6 @@ class SubnetResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-# ---------------------------------------------------------------------------
-# VNET
-# ---------------------------------------------------------------------------
 class VNetCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=128, example="vnet-production")
     resource_group: str = Field(..., min_length=1, max_length=128, example="rg-production")

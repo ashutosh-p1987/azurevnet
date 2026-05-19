@@ -1,6 +1,4 @@
-"""
-SQLAlchemy ORM models for Users, VNETs, and Subnets.
-"""
+
 from __future__ import annotations
 from datetime import datetime, timezone
 from typing import List, Optional
@@ -15,9 +13,6 @@ def utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
-# ---------------------------------------------------------------------------
-# User
-# ---------------------------------------------------------------------------
 class User(Base):
     __tablename__ = "users"
 
@@ -31,9 +26,6 @@ class User(Base):
     vnets: Mapped[List["VNet"]] = relationship("VNet", back_populates="owner", cascade="all, delete-orphan")
 
 
-# ---------------------------------------------------------------------------
-# VNET
-# ---------------------------------------------------------------------------
 class VNet(Base):
     __tablename__ = "vnets"
 
@@ -55,9 +47,6 @@ class VNet(Base):
     subnets: Mapped[List["Subnet"]] = relationship("Subnet", back_populates="vnet", cascade="all, delete-orphan")
 
 
-# ---------------------------------------------------------------------------
-# Subnet
-# ---------------------------------------------------------------------------
 class Subnet(Base):
     __tablename__ = "subnets"
 

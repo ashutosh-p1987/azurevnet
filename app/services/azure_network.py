@@ -1,10 +1,4 @@
-"""
-Azure Network service – wraps the azure-mgmt-network SDK.
 
-If Azure credentials are not configured (local dev / CI), the service falls
-back to a "mock" mode that returns synthetic responses so that the rest of
-the application can be exercised without a real Azure subscription.
-"""
 from __future__ import annotations
 import logging
 import json
@@ -15,9 +9,6 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 
-# ---------------------------------------------------------------------------
-# Try to import Azure SDK; fall back gracefully if not installed / not configured
-# ---------------------------------------------------------------------------
 try:
     from azure.identity import ClientSecretCredential
     from azure.mgmt.network import NetworkManagementClient
@@ -53,10 +44,6 @@ def _get_network_client() -> "NetworkManagementClient":
     return NetworkManagementClient(credential, settings.AZURE_SUBSCRIPTION_ID)
 
 
-# ---------------------------------------------------------------------------
-# Public interface
-# ---------------------------------------------------------------------------
-
 class VNetCreationResult:
     """Normalised result returned by create_vnet regardless of mode."""
     def __init__(
@@ -77,30 +64,13 @@ async def create_vnet(
     address_space: List[str],
     subnets: List[dict],  # [{"name": str, "address_prefix": str}]
 ) -> VNetCreationResult:
-    """
-    Create a VNET (+ subnets) in Azure or return a mock result.
 
-    Parameters
-    ----------
-    name            : VNET name
-    resource_group  : Azure resource group (must already exist for real calls)
-    location        : Azure region, e.g. "eastus"
-    address_space   : List of CIDR strings, e.g. ["10.0.0.0/16"]
-    subnets         : List of subnet dicts with 'name' and 'address_prefix'
-
-    Returns
-    -------
-    VNetCreationResult with azure_id, provisioning_state, and per-subnet info.
-    """
     if not _is_azure_configured():
         return _mock_create_vnet(name, resource_group, location, address_space, subnets)
 
     return await _azure_create_vnet(name, resource_group, location, address_space, subnets)
 
 
-# ---------------------------------------------------------------------------
-# Real Azure implementation
-# ---------------------------------------------------------------------------
 
 async def _azure_create_vnet(
     name: str,
@@ -151,43 +121,6 @@ async def _azure_create_vnet(
         logger.error(f"Azure VNET creation failed: {exc}")
         raise RuntimeError(f"Azure error: {exc}") from exc
 
-
-# ---------------------------------------------------------------------------
-# Mock implementation (no Azure credentials required)
-# ---------------------------------------------------------------------------
-
-def _mock_create_vnet(
-    name: str,
-    resource_group: str,
-    location: str,
-    address_space: List[str],
-    subnets: List[dict],
-) -> VNetCreationResult:
-    logger.info(
-        f"[MOCK] Simulating VNET creation: name={name}, rg={resource_group}, location={location}"
-    )
-    mock_subscription = "00000000-0000-0000-0000-000000000000"
-    base_id = (
-        f"/subscriptions/{mock_subscription}/resourceGroups/{resource_group}"
-        f"/providers/Microsoft.Network/virtualNetworks/{name}"
-    )
-
-    subnet_results = []
-    for s in subnets:
-        subnet_results.append(
-            {
-                "name": s["name"],
-                "address_prefix": s["address_prefix"],
-                "azure_id": f"{base_id}/subnets/{s['name']}",
-                "provisioning_state": "Succeeded",
-            }
-        )
-
-    return VNetCreationResult(
-        azure_id=base_id,
-        provisioning_state="Succeeded",
-        subnets=subnet_results,
-    )
 
 
 async def get_vnet_from_azure(name: str, resource_group: str) -> Optional[dict]:
