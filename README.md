@@ -30,7 +30,7 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│            FastAPIazvnet App                │
+│            Azure VNET API                   │
 │                                             │
 │  POST /api/v1/auth/register                 │
 │  POST /api/v1/auth/login  ──► JWT token     │
